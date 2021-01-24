@@ -1,6 +1,6 @@
 {
   "name": "umi-natur",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "description": "auto config natur plugin",
   "authors": {
@@ -8,8 +8,8 @@
     "email": "empty916@qq.com"
   },
   "repository": {
-		"type": "git",
-		"url": "git+https://github.com/empty916/umi-natur.git"
+    "type": "git",
+    "url": "git+https://github.com/empty916/umi-natur.git"
   },
   "homepage": "https://github.com/empty916/umi-natur",
   "scripts": {
