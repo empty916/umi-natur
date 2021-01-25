@@ -21,32 +21,6 @@ export default (api: IApi) => {
   } = api;
   const isDEV = process.env.NODE_ENV === 'development' && args._[0] === 'dev';
 
-  if (!!api.userConfig?.natur && !pkg.dependencies!['natur']) {
-    api.logger.error(
-      '您配置了natur，但是还没有安装natur包，请运行“npm install natur -S”或“yarn add natur”',
-    );
-  }
-  if (!!api.userConfig?.natur?.persist && !pkg.dependencies!['natur-persist']) {
-    api.logger.error(
-      '您配置了natur.persist，但是还没有安装natur-persist包，请运行“npm install natur-persist -S”或“yarn add natur-persist”',
-    );
-  }
-
-  if (!!api.userConfig?.natur?.service && !pkg.dependencies!['natur-service']) {
-    api.logger.error(
-      '您配置了natur.service，但是还没有安装natur-service包，请运行“npm install natur-service -S”或“yarn add natur-service”',
-    );
-  }
-
-  if (
-    !!api.userConfig?.natur?.taskPromise &&
-    !pkg.dependencies!['natur-promise-watcher']
-  ) {
-    api.logger.error(
-      '您配置了natur.taskPromise，但是还没有安装natur-promise-watcher包，请运行“npm install natur-promise-watcher -S”或“yarn add natur-promise-watcher”',
-    );
-  }
-
   api.describe({
     key: 'natur',
     config: {
@@ -193,10 +167,12 @@ export default (api: IApi) => {
       api.writeTmpFile({
         path: 'service/serviceObj.ts',
         content: exportClassModuleCode,
+        skipTSCheck: false,
       });
       api.writeTmpFile({
         path: 'service/index.ts',
         content: exportServiceInstanceCode,
+        skipTSCheck: false,
       });
     };
 
