@@ -65,7 +65,7 @@ const getService = ({
 
   const importModulesCode = serviceNames
     .reduce((res, serviceName, index) => {
-      res = res + `import ${serviceName} from '${serviceList[index].path}';\n`;
+      res = res + `import ${serviceName} from '${serviceList[index].path.replace(/\.(j|t)s$/, '')}';\n`;
       return res;
     }, '')
     .replace(/\n$/, '');
@@ -92,7 +92,7 @@ const getService = ({
     serviceNames.reduce((res, serviceName, index) => {
       res = res + `   ${serviceName},\n`;
       return res;
-    }, 'import {\n') + '} from "./serviceObj.ts";\n';
+    }, 'import {\n') + '} from "./serviceObj";\n';
 
   exportServiceInstanceCode =
     importFromExportClassCode + '\n' + exportServiceInstanceCode;
