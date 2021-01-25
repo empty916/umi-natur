@@ -82,6 +82,13 @@ export default (api: IApi) => {
           ],
         };
       });
+      api.addEntryImports(() => {
+        return [
+          {
+            source: './service',
+          },
+        ];
+      });
     }
   })();
 
@@ -147,6 +154,7 @@ export default (api: IApi) => {
           hasInterceptors: !!interceptors,
           hasMiddlewares: !!middlewares,
         }),
+        skipTSCheck: false,
       });
     };
 
@@ -210,6 +218,7 @@ export default (api: IApi) => {
       api.writeTmpFile({
         path: 'store/redux-devtool.ts',
         content: Mustache.render(reduxdevTpl, {}),
+        skipTSCheck: false,
       });
     }
 
@@ -221,6 +230,7 @@ export default (api: IApi) => {
       api.writeTmpFile({
         path: 'store/BaseService.ts',
         content: Mustache.render(baseServiceTpl, {}),
+        skipTSCheck: false,
       });
     }
 
@@ -257,6 +267,7 @@ export default (api: IApi) => {
           specific: JSON.stringify(specific),
           storageType,
         }),
+        skipTSCheck: false,
       });
     }
   });
