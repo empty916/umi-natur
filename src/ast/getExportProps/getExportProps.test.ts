@@ -1,4 +1,5 @@
 import { getExportProps } from './getExportProps';
+import { isStoreModule } from 'natur/dist/utils';
 
 test('normal', () => {
   const props = getExportProps(
@@ -81,29 +82,9 @@ test('export an class directly', () => {
       static h = true;
     }
   `);
-
   expect(props).toEqual({
-    a: 1,
-    b: '2',
-    c: expect.any(Function),
-    d: {
-      aa: '1',
-      bb: true,
-      cc: {
-        dd: 90,
-      },
-      ee: [2],
-      ff: null,
-      gg: undefined,
-      hh: expect.any(Function),
-      jj: expect.any(Function),
-    },
-    e: ['hh', { ff: 66 }, ['gg'], null, undefined, expect.any(Function)],
-    f: true,
-    g: false,
-    i: null,
-    j: undefined,
-    h: true,
+    name: 'Page',
+    superName: undefined,
   });
 });
 
@@ -164,4 +145,67 @@ export function foo () {}
     `,
   );
   expect(props).toEqual(undefined);
+});
+
+test('export default natur no map module', () => {
+  const props = getExportProps(
+    `
+export default {
+  state: {
+    name: 'app'
+  },
+  actions: {
+    update: name => ({name}),
+  }
+}
+    `,
+  );
+  expect(isStoreModule(props)).toEqual(true);
+});
+
+test('export default natur module', () => {
+  const props = getExportProps(
+    `
+export default {
+  state: {
+    name: 'app'
+  },
+  maps: {
+    m1: ['name', name => name.split(',')],
+    m11: [state => state.name, name => name.split(',')],
+    m2: ({name}) => name.split(','),
+    m3: () => 1,
+  },
+  actions: {
+    update: name => ({name}),
+  }
+}
+    `,
+  );
+  expect(isStoreModule(props)).toEqual(true);
+});
+
+test('export default natur module with identifier', () => {
+  const props = getExportProps(
+    `
+const state1 = {
+  name: 'app'
+};
+const actions1 = {
+  update: name => ({name}),
+};
+const maps1 = {
+  m1: ['name', name => name.split(',')],
+  m11: [state => state.name, name => name.split(',')],
+  m2: ({name}) => name.split(','),
+  m3: () => 1,
+};
+export default {
+  state: state1,
+  maps: maps1,
+  actions: actions1,
+}
+    `,
+  );
+  expect(isStoreModule(props)).toEqual(true);
 });

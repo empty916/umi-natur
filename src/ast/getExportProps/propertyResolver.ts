@@ -153,6 +153,14 @@ export function findObjectLiteralProperties(node: t.ObjectExpression) {
 
 export function findClass(node: t.ClassExpression) {}
 
+const standardNaturModule = {
+  state: {},
+  maps: {},
+  actions: {
+    a: () => {},
+  },
+};
+
 export function findObjectMembers(node: t.ObjectExpression) {
   const target = {};
   node.properties.forEach(p => {
@@ -163,6 +171,8 @@ export function findObjectMembers(node: t.ObjectExpression) {
         const resolver = NODE_RESOLVERS.find(resolver => resolver.is(p.value));
         if (resolver) {
           target[(p.key as any).name] = resolver.get(p.value as any);
+        } else if (standardNaturModule[p.key.name]) {
+          target[(p.key as any).name] = standardNaturModule[p.key.name];
         }
       }
     }
