@@ -209,3 +209,29 @@ export default {
   );
   expect(isStoreModule(props)).toEqual(true);
 });
+
+test('export default natur module with identifier2', () => {
+  const props = getExportProps(
+    `
+const state1 = {
+  name: 'app'
+};
+const actions1 = {
+  update: name => ({name}),
+};
+const maps1 = {
+  m1: ['name', name => name.split(',')],
+  m11: [state => state.name, name => name.split(',')],
+  m2: ({name}) => name.split(','),
+  m3: () => 1,
+};
+const testModule = {
+  state: state1,
+  maps: maps1,
+  actions: actions1,
+};
+export default testModule;
+    `,
+  );
+  expect(isStoreModule(props)).toEqual(true);
+});

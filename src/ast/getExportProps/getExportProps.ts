@@ -33,10 +33,16 @@ export function getExportProps(code: string) {
             };
           } else {
             const { name } = defaultExport;
-            props = findAssignmentExpressionProps({
+            props = findVariableDeclaration({
               programNode: node,
               name,
             });
+            if (!props || Object.keys(props as {}).length === 0) {
+              props = findAssignmentExpressionProps({
+                programNode: node,
+                name,
+              });
+            }
           }
         } else if (t.isObjectExpression(defaultExport)) {
           props = findObjectMembers(defaultExport);
@@ -53,6 +59,7 @@ export function getExportProps(code: string) {
       },
     },
   });
+  // console.log("props: ", props);
   return props;
 }
 
@@ -100,6 +107,30 @@ function findAssignmentExpressionProps(opts: {
         props[(node.left.property as any).name] = resolver.get(
           node.right as any,
         );
+      }
+    }
+  }
+  return props;
+}
+
+function findVariableDeclaration(opts: {
+  programNode: t.Program;
+  name: string;
+}) {
+  let props: Partial<Record<keyof any, unknown>> = {};
+  for (const n of opts.programNode.body) {
+    let node: t.Node = n;
+    if (t.isVariableDeclaration(node)) {
+      const targetDeclarator = node.declarations.find(
+        (i: t.VariableDeclarator) => (i.id as any).name === opts.name,
+      );
+      if (targetDeclarator && targetDeclarator.init) {
+        const resolver = NODE_RESOLVERS.find(resolver =>
+          resolver.is(targetDeclarator.init),
+        );
+        if (resolver) {
+          props = resolver.get(targetDeclarator.init as any) as any;
+        }
       }
     }
   }
