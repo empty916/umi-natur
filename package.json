@@ -1,6 +1,6 @@
 {
   "name": "umi-natur",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "lib/index.js",
   "description": "auto config natur plugin",
   "authors": {
@@ -17,6 +17,7 @@
     "build": "father-build",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
+    "prepublish": "yarn build",
     "test:coverage": "umi-test --coverage",
     "test:update": "umi-test --updateSnapshot"
   },
