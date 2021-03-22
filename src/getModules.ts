@@ -44,7 +44,12 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
   const importModulesCode = fileNames
     .reduce((res, fileName, index) => {
       if (isSyncModule(files[index])) {
-        res = res + `import ${fileName} from '${files[index]}';\n`;
+        res =
+          res +
+          `import ${fileName} from '${files[index].replace(
+            /\.(j|t)s$/,
+            '',
+          )}';\n`;
       }
       return res;
     }, '')
