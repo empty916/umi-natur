@@ -27,7 +27,7 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
   const fileNames = files
     .map(f =>
       f
-        .replace(join('@', relativePath), '')
+        .replace(`@/${relativePath}`, '')
         .slice(1)
         // 删除扩展名
         .replace(/\.(j|t)s$/, '')
