@@ -104,7 +104,7 @@ const store = _createStore();
 export default store;
 
 export type StoreType = typeof store.type;
-
+export type Store = typeof store;
 
 {{#persist}}
 export {
