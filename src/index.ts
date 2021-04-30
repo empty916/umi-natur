@@ -67,6 +67,7 @@ export default (api: IApi) => {
             exported: 'store',
           },
           'inject',
+          'Store',
         ],
       };
     });
