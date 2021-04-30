@@ -77,6 +77,7 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
     importModulesCode,
     modulesObjCode,
     lazyModulesObjCode,
+    hasModules: !!fileNames.length,
   };
 };
 

@@ -97,6 +97,7 @@ export default (api: IApi) => {
       return;
     }
     const storeTpl = readFileSync(join(__dirname, 'store.tpl'), 'utf-8');
+    const runtimeTpl = readFileSync(join(__dirname, 'runtime.tpl'), 'utf-8');
 
     const defaultIsSyncModule = (filePath: string) => true;
     const isSSR = !!api.userConfig?.ssr;
@@ -114,8 +115,18 @@ export default (api: IApi) => {
       };
     };
 
-    const genStoreIndexFile = () => {
+    const _getModules = () => {
       const { srcPath, relativePath } = getPath();
+      return getModules({
+        srcPath,
+        relativePath,
+        isSyncModule: isSSR
+          ? defaultIsSyncModule
+          : api.userConfig?.natur?.isSyncModule || defaultIsSyncModule,
+      });
+    };
+
+    const genStoreIndexFile = () => {
       const taskPromise = !!api.userConfig?.natur?.taskPromise;
       const interceptors = api.userConfig?.natur?.interceptors;
       const middlewares = api.userConfig?.natur?.middlewares;
@@ -124,13 +135,7 @@ export default (api: IApi) => {
         importModulesCode,
         modulesObjCode,
         lazyModulesObjCode,
-      } = getModules({
-        srcPath,
-        relativePath,
-        isSyncModule: isSSR
-          ? defaultIsSyncModule
-          : api.userConfig?.natur?.isSyncModule || defaultIsSyncModule,
-      });
+      } = _getModules();
 
       if (interceptors) {
         importModulesCode =
@@ -153,6 +158,7 @@ export default (api: IApi) => {
           taskPromise,
           hasInterceptors: !!interceptors,
           hasMiddlewares: !!middlewares,
+          isSSR,
         }),
         skipTSCheck: false,
       });
@@ -183,7 +189,19 @@ export default (api: IApi) => {
         skipTSCheck: false,
       });
     };
-
+    const genRuntimeFile = () => {
+      if (isSSR) {
+        api.writeTmpFile({
+          path: 'store/runtime.ts',
+          content: Mustache.render(runtimeTpl, {
+            isSSR,
+            hasService: !!api.config.natur?.service,
+          }),
+          skipTSCheck: false,
+        });
+      }
+    };
+    genRuntimeFile();
     genStoreIndexFile();
     if (!!api.userConfig?.natur?.service) {
       genServiceFile();
@@ -233,7 +251,6 @@ export default (api: IApi) => {
         skipTSCheck: false,
       });
     }
-
     if (usePersist) {
       const persistTpl = readFileSync(join(__dirname, 'persist.tpl'), 'utf-8');
       const naturConfig = api.userConfig?.natur;
@@ -270,5 +287,11 @@ export default (api: IApi) => {
         skipTSCheck: false,
       });
     }
+  });
+  api.addRuntimePlugin(() => {
+    if (!!api.config.ssr) {
+      return [join(api.paths.absTmpPath!, 'store/runtime.ts')];
+    }
+    return [];
   });
 };
