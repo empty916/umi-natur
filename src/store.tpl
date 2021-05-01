@@ -125,9 +125,9 @@ export class NaturContainer extends Component {
   componentWillUnmount() {
     try {
       // 释放 gc
-	  this.store?.destroy();
 	  this.serviceList.forEach(s => s.destroy());
 	  this.serviceList = [];
+	  this.store?.destroy();
       this.store = undefined;
     } catch(e) {
       console.error(e);
