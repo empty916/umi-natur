@@ -3,7 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import glob from 'glob';
 import { IApi } from '@umijs/types';
-import { t } from '@umijs/utils';
+import { winPath } from '@umijs/utils';
 
 const firstCharToLowerCase = (str: string) =>
   str.slice(0, 1).toLowerCase() + str.slice(1);
@@ -58,14 +58,19 @@ const getService = ({
     })
     .map(f => ({
       serviceName: firstCharToUpperCase(f!.serviceName),
-      path: f!.path.replace(srcPath, '@'),
+      path: winPath(f!.path),
     }));
 
   const serviceNames = serviceList.map(s => s.serviceName);
 
   const importModulesCode = serviceNames
     .reduce((res, serviceName, index) => {
-      res = res + `import ${serviceName} from '${serviceList[index].path.replace(/\.(j|t)s$/, '')}';\n`;
+      res =
+        res +
+        `import ${serviceName} from '${serviceList[index].path.replace(
+          /\.(j|t)s$/,
+          '',
+        )}';\n`;
       return res;
     }, '')
     .replace(/\n$/, '');

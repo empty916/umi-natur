@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import glob from 'glob';
 import { isStoreModule } from 'natur/dist/utils';
+import { winPath } from '@umijs/utils';
 
 type getModulesArg = {
   srcPath: string;
@@ -16,17 +17,22 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
   const storeModuleTargetDir = join(srcPath, relativePath);
   let files = glob.sync(join(storeModuleTargetDir, '**', '*.{j,t}s'));
 
-  files = files
+  let filesObj = files
     .filter(f => {
       const fileCode = readFileSync(f, 'utf-8');
       const res = getExportProps(fileCode);
       return !!res && isStoreModule(res);
     })
-    .map(f => f.replace(srcPath, '@'));
+    .map(f => ({
+      relativePath: f.replace(srcPath, '@'),
+      absPath: winPath(f),
+      fileName: '',
+    }));
 
-  const fileNames = files
-    .map(f =>
-      f
+  filesObj = filesObj
+    .map(f => ({
+      ...f,
+      fileName: f.relativePath
         .replace(`@/${relativePath}`, '')
         .slice(1)
         // 删除扩展名
@@ -38,15 +44,20 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
         .replace(/^\d+/, '')
         // 将aaa/bbb/ccc改变为aaaBbbCcc
         .replace(/[\/\-_]([a-zA-Z])/g, (_, s) => s.toUpperCase()),
-    )
-    .map(firstCharToLowerCase);
+    }))
+    .map(f => ({
+      ...f,
+      fileName: firstCharToLowerCase(f.fileName),
+    }));
+  const fileNames = filesObj.map(f => f.fileName);
+  files = filesObj.map(f => f.relativePath);
 
   const importModulesCode = fileNames
     .reduce((res, fileName, index) => {
       if (isSyncModule(files[index])) {
         res =
           res +
-          `import ${fileName} from '${files[index].replace(
+          `import ${fileName} from '${filesObj[index].absPath.replace(
             /\.(j|t)s$/,
             '',
           )}';\n`;
@@ -68,7 +79,9 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
       if (!isSyncModule(files[index])) {
         res =
           res +
-          `   ${fileName}: () => import(/* webpackChunkName: "${fileName}" */ '${files[index]}'),\n`;
+          `   ${fileName}: () => import(/* webpackChunkName: "${fileName}" */ '${filesObj[
+            index
+          ].absPath.replace(/\.(j|t)s$/, '')}'),\n`;
       }
       return res;
     }, '{\n') + '}';
