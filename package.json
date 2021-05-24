@@ -1,6 +1,6 @@
 {
   "name": "umi-natur",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "main": "lib/index.js",
   "description": "auto config natur plugin",
   "authors": {
@@ -39,6 +39,7 @@
     "@umijs/test": "^3.0.10",
     "@umijs/test-utils": "^1.0.0",
     "@umijs/utils": "^3.3.7",
+    "babel-plugin-import": "^1.13.3",
     "body-parser": "^1.18.2",
     "cross-env": "^6.0.3",
     "express": "^4.15.3",
@@ -64,9 +65,9 @@
     "lib"
   ],
   "dependencies": {
-    "natur": "^2.1.1",
-    "natur-persist": "^1.2.2",
-    "natur-promise-watcher": "^1.0.1",
-    "natur-service": "^2.1.2"
+    "natur": "^2.1.x",
+    "natur-persist": "^1.2.x",
+    "natur-promise-watcher": "^1.0.x",
+    "natur-service": "^2.1.x"
   }
 }
