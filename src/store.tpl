@@ -71,7 +71,7 @@ export const _createStore = () => {
 			{{#isSSR}}
 			() => next => record => {
 				const res = next(record);
-				if (isPromise(record.state)) {
+				if (isPromise(record.state) && !isBrowser()) {
 					return res.then((data: any) => promiseActionsFinishedPromise()
 						.then(() => data));
 				}
