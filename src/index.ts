@@ -45,6 +45,7 @@ export default (api: IApi) => {
             superClassName: joi.string(),
             ignore: joi.array().items(joi.object().instance(RegExp)),
           }),
+          useImmer: joi.bool(),
           dirName: joi.string(),
           taskPromise: joi.bool(),
           isSyncModule: joi.function(),
@@ -103,6 +104,7 @@ export default (api: IApi) => {
     const defaultIsSyncModule = (filePath: string) => true;
     const isSSR = !!api.userConfig?.ssr;
     const usePersist = !!api.userConfig?.natur?.persist && !api.userConfig?.ssr;
+    const useImmer = !!api.userConfig?.natur?.useImmer;
 
     const getPath = () => {
       const srcPath = api.paths.absSrcPath || join(cwd, 'src');
@@ -160,6 +162,7 @@ export default (api: IApi) => {
           hasInterceptors: !!interceptors,
           hasMiddlewares: !!middlewares,
           isSSR,
+          useImmer,
         }),
         skipTSCheck: false,
       });

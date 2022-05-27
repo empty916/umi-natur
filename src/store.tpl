@@ -4,10 +4,16 @@ import NaturService from 'natur-service';
 import {
 	promiseMiddleware,
 	shallowEqualMiddleware,
+	{{^useImmer}}
 	thunkMiddleware,
+	{{/useImmer}}
 	filterUndefinedMiddleware,
 	fillObjectRestDataMiddleware,
 } from 'natur/dist/middlewares';
+
+{{#useImmer}}
+import { thunkMiddleware } from 'natur-immer';
+{{/useImmer}}
 
 
 
