@@ -4,6 +4,7 @@ import { join } from 'path';
 import getModules from './getModules';
 import getService from './getService';
 import { chokidar, yParser } from '@umijs/utils';
+import { Mustache } from '@umijs/utils';
 
 const args = yParser(process.argv.slice(2), {
   alias: {
@@ -14,11 +15,7 @@ const args = yParser(process.argv.slice(2), {
 });
 
 export default (api: IApi) => {
-  const {
-    cwd,
-    pkg,
-    utils: { Mustache },
-  } = api;
+  const { cwd, pkg } = api;
   const isDEV = process.env.NODE_ENV === 'development' && args._[0] === 'dev';
 
   api.describe({
@@ -59,35 +56,35 @@ export default (api: IApi) => {
     if (!api.userConfig.natur) {
       return;
     }
-    api.addUmiExports(() => {
-      return {
-        source: '../store',
-        specifiers: [
-          {
-            local: 'default',
-            exported: 'store',
-          },
-          'inject',
-          'Store',
-        ],
-      };
-    });
+    // api.addUmiExports(() => {
+    //   return {
+    //     source: '../store',
+    //     specifiers: [
+    //       {
+    //         local: 'default',
+    //         exported: 'store',
+    //       },
+    //       'inject',
+    //       'Store',
+    //     ],
+    //   };
+    // });
     if (!!api.userConfig?.natur?.service) {
-      api.addUmiExports(() => {
-        return {
-          source: '../store/BaseService',
-          specifiers: [
-            {
-              local: 'default',
-              exported: 'BaseService',
-            },
-          ],
-        };
-      });
+      // api.addUmiExports(() => {
+      //   return {
+      //     source: '../store/BaseService',
+      //     specifiers: [
+      //       {
+      //         local: 'default',
+      //         exported: 'BaseService',
+      //       },
+      //     ],
+      //   };
+      // });
       api.addEntryImports(() => {
         return [
           {
-            source: './service',
+            source: './plugin-natur/service',
           },
         ];
       });
@@ -151,7 +148,7 @@ export default (api: IApi) => {
       }
 
       api.writeTmpFile({
-        path: 'store/index.ts',
+        path: 'index.ts',
         content: Mustache.render(storeTpl, {
           importModulesCode: importModulesCode,
           modules: modulesObjCode,
@@ -196,7 +193,7 @@ export default (api: IApi) => {
     const genRuntimeFile = () => {
       if (isSSR) {
         api.writeTmpFile({
-          path: 'store/runtime.ts',
+          path: 'runtime.ts',
           content: Mustache.render(runtimeTpl, {
             isSSR,
             hasService: !!api.config.natur?.service,
@@ -238,7 +235,7 @@ export default (api: IApi) => {
         'utf-8',
       );
       api.writeTmpFile({
-        path: 'store/redux-devtool.ts',
+        path: 'redux-devtool.ts',
         content: Mustache.render(reduxdevTpl, {}),
         skipTSCheck: false,
       });
@@ -250,7 +247,7 @@ export default (api: IApi) => {
         'utf-8',
       );
       api.writeTmpFile({
-        path: 'store/BaseService.ts',
+        path: 'BaseService.ts',
         content: Mustache.render(baseServiceTpl, {}),
         skipTSCheck: false,
       });
@@ -269,7 +266,7 @@ export default (api: IApi) => {
         storageType = 'localStorage',
       } = persistConfig;
       api.writeTmpFile({
-        path: 'store/persist.ts',
+        path: 'persist.ts',
         content: Mustache.render(persistTpl, {
           name,
           time,
@@ -294,7 +291,7 @@ export default (api: IApi) => {
   });
   api.addRuntimePlugin(() => {
     if (!!api.config.ssr) {
-      return [join(api.paths.absTmpPath!, 'store/runtime.ts')];
+      return [join(api.paths.absTmpPath!, 'runtime.ts')];
     }
     return [];
   });

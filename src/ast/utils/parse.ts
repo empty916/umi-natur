@@ -1,4 +1,6 @@
-import { t, parser } from '@umijs/utils';
+// import { t, parser } from '@umijs/utils';
+import * as t from '@umijs/bundler-utils/compiled/babel/types';
+import * as parser from '@umijs/bundler-utils/compiled/babel/parser';
 
 export function parse(code: string): t.File {
   return parser.parse(code, {

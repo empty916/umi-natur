@@ -35,19 +35,19 @@ import { createPromiseWatcherMiddleware } from 'natur-promise-watcher';
  * 
  * @returns boolean
  */
- function isBrowser(): boolean {
+function isBrowser(): boolean {
 	return typeof window !== 'undefined' &&
 	typeof window.document !== 'undefined' &&
 	typeof window.document.createElement !== 'undefined'
-  }
+}
   
-  export const isPromise = (target: any): target is Promise<any> => {
-	  return (
-		  typeof target?.then === "function" &&
-		  typeof target?.catch === "function" &&
-		  typeof target?.finally === "function"
-	  );
-  };
+const isPromise = (target: any): target is Promise<any> => {
+	return (
+		typeof target?.then === "function" &&
+		typeof target?.catch === "function" &&
+		typeof target?.finally === "function"
+	);
+};
   
 
 const modules = {{{modules}}};
@@ -105,9 +105,9 @@ export const _createStore = () => {
 	});
 };
 
-const store = _createStore();
+export const store = _createStore();
 
-export default store;
+// export default store;
 
 export type StoreType = typeof store.type;
 export type Store = typeof store;

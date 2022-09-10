@@ -1,4 +1,6 @@
-import { t, traverse } from '@umijs/utils';
+import * as t from '@umijs/bundler-utils/compiled/babel/types';
+import traverse from '@umijs/bundler-utils/compiled/babel/traverse';
+
 import { parse } from '../utils/parse';
 import {
   NODE_RESOLVERS,
@@ -7,9 +9,9 @@ import {
 } from './propertyResolver';
 
 export function getExportProps(code: string) {
-  const ast = parse(code) as babel.types.File;
+  const ast = parse(code);
   let props: unknown = undefined;
-  traverse.default(ast, {
+  traverse(ast, {
     Program: {
       enter(path) {
         const node = path.node as t.Program;

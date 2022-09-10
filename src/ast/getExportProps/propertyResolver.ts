@@ -1,4 +1,4 @@
-import { t } from '@umijs/utils';
+import * as t from '@umijs/bundler-utils/compiled/babel/types';
 
 interface IResolver<U> {
   is(src: any): boolean;
