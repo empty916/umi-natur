@@ -16,7 +16,7 @@ const firstCharToLowerCase = (str: string) =>
 const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
   const storeModuleTargetDir = join(srcPath, relativePath);
   let files = glob.sync(join(storeModuleTargetDir, '**', '*.{j,t}s'));
-
+  files = files.filter(fileName => !/\.d\.ts$/.test(fileName));
   let filesObj = files
     .filter(f => {
       const fileCode = readFileSync(f, 'utf-8');
