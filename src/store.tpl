@@ -65,9 +65,7 @@ export const _createStore = () => {
 	const { collectPromiseMiddleware, promiseActionsFinishedPromise } = createPromiseWatcherMiddleware();
 	{{/isSSR}}
 	return createStore(modules, lazyModules, {
-		{{#persist}}
-		initStates: getData(),
-		{{/persist}}
+		
 		{{#hasInterceptors}}
 		interceptors: userInterceptors(() => store),
 		{{/hasInterceptors}}
@@ -102,11 +100,10 @@ export const _createStore = () => {
 			{{/persist}}
 			{{/hasMiddlewares}}
 		],
-		{{#isSSR}}
-		initStates: (typeof window !== 'undefined' && (window as any).g_useSSR ? (window as any).g_initialProps : {}),
-		{{/isSSR}}
+		
 	});
 };
+
 
 export const store = _createStore();
 
@@ -126,6 +123,17 @@ export const inject = createInject({
 });
 
 
+{{#persist}}
+if (getData()) {
+	store.globalSetStates(getData());
+}
+{{/persist}}
+
+{{#isSSR}}
+if (isBrowser() && (window as any).g_useSSR) {
+	store.globalSetStates((window as any).g_initialProps : {})
+}
+{{/isSSR}}
 
 {{#isSSR}}
 export class NaturContainer extends Component {
