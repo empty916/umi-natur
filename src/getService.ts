@@ -28,11 +28,12 @@ const getService = ({
 }: getServiceArg) => {
   const storeModuleTargetDir = join(srcPath, relativePath);
   let files = glob.sync(join(storeModuleTargetDir, '**', '*.{j,t}s'));
-
+  files = files.filter(fileName => !/\.d\.ts$/.test(fileName));
   const serviceList = files
     .map(f => {
       const fileCode = readFileSync(f, 'utf-8');
       const res = getExportProps(fileCode);
+
       const isNaturService =
         (!!res && (res as any)?.superName === 'BaseService') ||
         (res as any)?.superName === superClassName;

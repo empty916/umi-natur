@@ -1,8 +1,9 @@
 import NaturService from 'natur-service';
-import store, { LM, M } from './index';
+import type { LM, M } from './index';
+import { store } from './index';
 
 
-export default class extends NaturService<M, LM>{
+export class BaseService extends NaturService<M, LM>{
     constructor(s: typeof store = store) {
         super(s);
         this.start();

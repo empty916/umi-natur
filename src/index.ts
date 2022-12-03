@@ -160,6 +160,7 @@ export default (api: IApi) => {
           hasMiddlewares: !!middlewares,
           isSSR,
           useImmer,
+          useService: !!api.userConfig?.natur?.service,
         }),
         skipTSCheck: false,
       });

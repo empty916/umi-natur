@@ -56,6 +56,9 @@ const lazyModules = {{{lazyModules}}};
 export type M = typeof modules;
 export type LM = typeof lazyModules;
 
+{{#useService}}
+export { BaseService } from './BaseService'
+{{/useService}}
 
 export const _createStore = () => {
 	{{#isSSR}}
