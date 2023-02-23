@@ -1,6 +1,6 @@
 {
   "name": "umi-natur",
-  "version": "2.0.0-beta4",
+  "version": "2.0.0-beta5",
   "main": "lib/index.js",
   "description": "auto config natur plugin",
   "authors": {
@@ -15,8 +15,8 @@
   "scripts": {
     "start": "cross-env APP_ROOT=example umi dev",
     "build": "father-build",
-    "pub": "yarn publish",
-    "pub:next": "yarn publish --tag next",
+    "pub:release": "yarn publish",
+    "pub": "yarn publish --tag next",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "prepublish": "yarn build",
