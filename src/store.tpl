@@ -12,7 +12,7 @@ import {
 } from 'natur/dist/middlewares';
 
 {{#useImmer}}
-import { thunkMiddleware } from 'natur-immer';
+import { thunkMiddleware, withImmerAPIInterceptor } from 'natur-immer';
 {{/useImmer}}
 
 
@@ -65,10 +65,14 @@ export const _createStore = () => {
 	const { collectPromiseMiddleware, promiseActionsFinishedPromise } = createPromiseWatcherMiddleware();
 	{{/isSSR}}
 	return createStore(modules, lazyModules, {
-		
-		{{#hasInterceptors}}
-		interceptors: userInterceptors(() => store),
-		{{/hasInterceptors}}
+		interceptors: [
+			{{#useImmer}}
+			withImmerAPIInterceptor,
+			{{/useImmer}}
+			{{#hasInterceptors}}
+			...userInterceptors(() => store),
+			{{/hasInterceptors}}
+		],
 		middlewares: [
 			{{#hasMiddlewares}}
 			...userMiddlewares(() => store),
