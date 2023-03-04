@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { createStore, createInject } from 'natur';
+import { createStore, createInject, createUseInject } from 'natur';
 import NaturService from 'natur-service';
 import {
 	promiseMiddleware,
@@ -126,6 +126,8 @@ export const inject = createInject({
 	storeGetter: () => ((global as any).store || store) as typeof store,
 });
 
+export const useInject = createUseInject(() => store);
+export const useFlatInject = createUseInject(() => store, {flat: true});
 
 {{#persist}}
 if (getData()) {
