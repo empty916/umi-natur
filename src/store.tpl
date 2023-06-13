@@ -123,7 +123,7 @@ export {
 {{/persist}}
 
 export const inject = createInject({
-	storeGetter: () => ((global as any).store || store) as typeof store,
+	storeGetter: () => store,
 });
 
 export const useInject = createUseInject(() => store);
