@@ -18,15 +18,20 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
   let files = glob.sync(join(storeModuleTargetDir, '**', '*.{j,t}s'));
   files = files.filter(fileName => !/\.d\.ts$/.test(fileName));
   let filesObj = files
-    .filter(f => {
+    .map(f => {
       const fileCode = readFileSync(f, 'utf-8');
       const res = getExportProps(fileCode);
-      return !!res && isStoreModule(res);
+      return {
+        fileName: f,
+        res: !!res && isStoreModule(res) ? res : null,
+      };
     })
+    .filter(f => !!f.res)
     .map(f => ({
-      relativePath: f.replace(srcPath, '@'),
-      absPath: winPath(f),
+      relativePath: f.fileName.replace(srcPath, '@'),
+      absPath: winPath(f.fileName),
       fileName: '',
+      customName: (f.res as any)?.name || '',
     }));
 
   filesObj = filesObj
@@ -47,7 +52,7 @@ const getModules = ({ srcPath, relativePath, isSyncModule }: getModulesArg) => {
     }))
     .map(f => ({
       ...f,
-      fileName: firstCharToLowerCase(f.fileName),
+      fileName: f.customName || firstCharToLowerCase(f.fileName),
     }));
   const fileNames = filesObj.map(f => f.fileName);
   files = filesObj.map(f => f.relativePath);

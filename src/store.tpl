@@ -1,6 +1,8 @@
-import { Component } from 'react';
 import { createStore, createInject, createUseInject } from 'natur';
+{{#isSSR}}
+import { Component } from 'react';
 import NaturService from 'natur-service';
+{{/isSSR}}
 import {
 	promiseMiddleware,
 	shallowEqualMiddleware,
@@ -12,7 +14,7 @@ import {
 } from 'natur/dist/middlewares';
 
 {{#useImmer}}
-import { thunkMiddleware, withImmerAPIInterceptor } from 'natur-immer';
+import { thunkMiddleware } from 'natur-immer';
 {{/useImmer}}
 
 
@@ -29,7 +31,7 @@ import { createPromiseWatcherMiddleware } from 'natur-promise-watcher';
 {{{importModulesCode}}}
 
 
-
+{{#isSSR}}
 /**
  * whether browser env
  * 
@@ -48,7 +50,7 @@ const isPromise = (target: any): target is Promise<any> => {
 		typeof target?.finally === "function"
 	);
 };
-  
+{{/isSSR}}
 
 const modules = {{{modules}}};
 const lazyModules = {{{lazyModules}}};
@@ -66,9 +68,6 @@ export const _createStore = () => {
 	{{/isSSR}}
 	return createStore(modules, lazyModules, {
 		interceptors: [
-			{{#useImmer}}
-			withImmerAPIInterceptor,
-			{{/useImmer}}
 			{{#hasInterceptors}}
 			...userInterceptors(() => store),
 			{{/hasInterceptors}}
