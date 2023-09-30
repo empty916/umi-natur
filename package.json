@@ -1,6 +1,6 @@
 {
   "name": "umi-natur",
-  "version": "2.0.2-beta1",
+  "version": "2.0.2",
   "main": "lib/index.js",
   "description": "auto config natur plugin",
   "authors": {
